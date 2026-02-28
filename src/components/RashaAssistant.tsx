@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, Send, X, Bot } from 'lucide-react';
-import { useAuth } from './AuthContext';
+import { useAuth } from '../AuthContext';
 
 export default function RashaAssistant() {
   const [isOpen, setIsOpen] = useState(false);

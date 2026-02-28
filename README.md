@@ -1,20 +1,35 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# متجر أسماء للأدوات المنزلية (Asmaa Home Tools)
 
-# Run and deploy your AI Studio app
+متجر إلكتروني متكامل لبيع الأدوات المنزلية، مصمم لخدمة العملاء العاديين وتجار الجملة، مع دعم كامل للغة العربية ومساعد ذكي مدعوم بالذكاء الاصطناعي.
 
-This contains everything you need to run your app locally.
+## المميزات الرئيسية
 
-View your app in AI Studio: https://ai.studio/apps/d5e490ae-7c7d-450b-8342-613ab2b8971c
+- **نظام مستخدمين متعدد الأدوار**: (عميل، تاجر جملة، مدير نظام).
+- **أسعار مخصصة**: عرض أسعار الجملة تلقائياً للمستخدمين المسجلين كـ "Wholesale".
+- **المساعدة الذكية "رشا"**: مساعد افتراضي يساعد العملاء في اختيار المنتجات والإجابة على استفساراتهم.
+- **إدارة المخزون**: تتبع الكميات لكل لون وصنف، ومنع الطلب في حال نفاذ الكمية.
+- **طباعة الفواتير**: دعم طباعة فواتير حرارية بمقاس 80mm.
+- **لوحة تحكم الإدارة**: إدارة كاملة للمنتجات، الأقسام، الطلبات، والمستخدمين.
 
-## Run Locally
+## التقنيات المستخدمة
 
-**Prerequisites:**  Node.js
+- **Frontend**: React 19, Tailwind CSS, Framer Motion, Lucide Icons.
+- **Backend**: Express.js (Node.js).
+- **Database & Auth**: Supabase.
+- **AI**: Google Gemini API (Model: gemini-3-flash-preview).
 
+## كيفية التشغيل
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. قم بتثبيت التبعيات: `npm install`
+2. قم بتهيئة ملف `.env` بناءً على `.env.example`.
+3. قم بتشغيل المتجر في وضع التطوير: `npm run dev`
+4. للبناء والتشغيل في الإنتاج: `npm run build` ثم `npm start`
+
+## إعداد قاعدة البيانات
+
+يجب تشغيل السكربت الموجود في `supabase_schema.sql` داخل محرر SQL في Supabase لإنشاء الجداول اللازمة.
+
+## ملاحظات
+
+- المتجر مصمم ليكون (Mobile-first) لضمان أفضل تجربة على الهواتف المحمولة.
+- الدفع متاح حالياً بنظام "الدفع عند الاستلام" فقط.
