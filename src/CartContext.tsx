@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { CartItem, Product, ProductVariant } from './types';
+import { CartItem, Product, ProductVariant, isSupabaseConfigured } from './types';
 import { useAuth } from './AuthContext';
 import { supabase } from './types';
 import toast from 'react-hot-toast';
@@ -20,7 +20,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const fetchCart = async () => {
-    if (!user) {
+    if (!isSupabaseConfigured || !user) {
       setItems([]);
       return;
     }
@@ -36,6 +36,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const addItem = async (product: Product, variant: ProductVariant, quantity: number) => {
+    if (!isSupabaseConfigured) return;
     if (!user) {
       toast.error('يرجى تسجيل الدخول أولاً');
       return;

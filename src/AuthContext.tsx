@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User, supabase } from './types';
+import { User, supabase, isSupabaseConfigured } from './types';
 
 interface AuthContextType {
   user: User | null;
@@ -15,21 +15,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refreshUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      const { data: profile } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-      setUser(profile);
-    } else {
-      setUser(null);
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
     }
-    setLoading(false);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        setUser(profile);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     refreshUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -45,6 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = async () => {
+    if (!isSupabaseConfigured) return;
     await supabase.auth.signOut();
     setUser(null);
   };

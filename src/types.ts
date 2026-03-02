@@ -4,7 +4,42 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+// Create a dummy supabase-like object to prevent "Cannot read properties of null" errors
+const dummySupabase = {
+  auth: {
+    getSession: async () => ({ data: { session: null }, error: null }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+    signInWithPassword: async () => ({ data: {}, error: new Error('Supabase not configured') }),
+    signUp: async () => ({ data: {}, error: new Error('Supabase not configured') }),
+    signOut: async () => ({ error: null }),
+  },
+  from: () => ({
+    select: () => ({
+      eq: () => ({
+        single: async () => ({ data: null, error: new Error('Supabase not configured') }),
+        order: () => ({ limit: async () => ({ data: [], error: null }) }),
+        limit: async () => ({ data: [], error: null }),
+      }),
+      order: () => ({ limit: async () => ({ data: [], error: null }) }),
+      limit: async () => ({ data: [], error: null }),
+    }),
+    insert: async () => ({ data: null, error: new Error('Supabase not configured') }),
+    update: async () => ({ data: null, error: new Error('Supabase not configured') }),
+    delete: async () => ({ eq: () => ({ data: null, error: new Error('Supabase not configured') }) }),
+  }),
+  storage: {
+    from: () => ({
+      upload: async () => ({ data: null, error: new Error('Supabase not configured') }),
+      getPublicUrl: () => ({ data: { publicUrl: '' } }),
+    })
+  }
+} as any;
+
+export const supabase = isSupabaseConfigured 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : dummySupabase;
 
 export type UserRole = 'customer' | 'wholesale' | 'admin';
 

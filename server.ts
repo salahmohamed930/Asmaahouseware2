@@ -12,9 +12,15 @@ const PORT = 3000;
 app.use(express.json());
 
 // Supabase Client
-const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+let supabase: any;
+if (supabaseUrl && supabaseKey) {
+  supabase = createClient(supabaseUrl, supabaseKey);
+} else {
+  console.warn("Supabase environment variables are missing. Server-side Supabase features will be disabled.");
+}
 
 // Gemini Client for Rasha
 const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });

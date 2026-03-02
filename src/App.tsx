@@ -1,12 +1,13 @@
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useCart } from './CartContext';
-import { ShoppingCart, User, LogOut, Menu, X, Home, Package, LayoutDashboard } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Menu, X, Home, Package, LayoutDashboard, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import RashaAssistant from './components/RashaAssistant';
+import { isSupabaseConfigured } from './types';
 
-// Pages (to be implemented)
+// Pages
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
@@ -23,6 +24,32 @@ export default function App() {
   const { items } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4" dir="rtl">
+        <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 max-w-md w-full text-center space-y-6">
+          <div className="bg-amber-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto text-amber-600">
+            <AlertTriangle size={40} />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-black text-gray-900">مطلوب إعداد Supabase</h1>
+            <p className="text-gray-500 text-sm">
+              يرجى إضافة متغيرات البيئة الخاصة بـ Supabase في لوحة (Secrets) ليعمل الموقع بشكل صحيح.
+            </p>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-2xl text-right text-xs font-mono space-y-2">
+            <p>VITE_SUPABASE_URL</p>
+            <p>VITE_SUPABASE_ANON_KEY</p>
+            <p>SUPABASE_SERVICE_ROLE_KEY</p>
+          </div>
+          <p className="text-xs text-gray-400">
+            بعد إضافة المفاتيح، سيتم إعادة تشغيل الموقع تلقائياً.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const handleSignOut = async () => {
     await signOut();
